@@ -7,4 +7,5 @@ app/routes/__pycache__/
 app/schemas/__pycache__/
 app/services/__pycache__/
 app/services/channel/__pycache__/
-scripts
+scripts/
+.gitignore
