@@ -1,1 +1,10 @@
+.venv
 .env
+app/__pycache__/
+app/core/__pycache__/
+app/models/__pycache__/
+app/routes/__pycache__/
+app/schemas/__pycache__/
+app/services/__pycache__/
+app/services/channel/__pycache__/
+scripts
