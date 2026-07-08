@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Bienvenido al sistema de notificaciones</h1>
+  </header>
+  <section>
+    <h1>Registro</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Contraseña">
+    <input type="text" id="fullName" placeholder="Nombre completo">
+    <button onclick="register()">Registrarse</button>
+    <p><a href="/login">¿Ya tienes cuenta? Inicia sesión</a></p>
+    <div class="error" id="error"></div>
+  </section>
+
+  <script src="/static/js/common.js"></script>
+  <script>
+    async function register() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const full_name = document.getElementById("fullName").value;
+
+      const res = await fetch(`${API}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, full_name })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        document.getElementById("error").innerText = data.detail || "Error al registrar";
+        return;
+      }
+      window.location.href = "/login";
+    }
+  </script>
+</body>
+</html>

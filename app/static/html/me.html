@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi perfil</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Mi perfil</h1>
+    <ul>
+      <!-- <li><button><a href="/notificaciones">Ver notificaciones</a></button></li> -->
+      <li><button onclick="logout()">Cerrar sesión</button></li>
+    </ul>
+  </header>
+  <section>
+    <div id="info">Cargando...</div>
+    <p><a href="/notificaciones">Ver notificaciones</a></p>
+    <button onclick="logout()">Cerrar sesión</button>
+  </section>
+
+  <script src="/static/js/common.js"></script>
+  <script>
+  (async () => {
+    const user = await requireAuth();
+    if (!user) return;
+    document.getElementById("info").innerHTML = `
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Nombre:</strong> ${user.full_name || "-"}</p>
+      <p><strong>Registrado:</strong> ${new Date(user.created_at).toLocaleString()}</p>
+    `;
+  })();
+  </script>
+</body>
+</html>

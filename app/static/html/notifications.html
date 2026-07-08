@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Mis notificaciones</h1>
+        <ul>
+            <li><div id="userInfo"></div></li>
+            <!-- <li><a href="/me">Mi perfil</a></li> -->
+             <li><button><a href="/me">Mi perfil</a></button></li>
+            <li><button onclick="logout()">Cerrar sesión</button></li>
+        </ul>
+    </header>
+    <section>
+        <h1>Mis notificaciones</h1>
+        <div id="userInfo"></div>
+    
+        <input type="text" id="title" placeholder="Título">
+        <textarea id="message" placeholder="Mensaje"></textarea>
+        <select id="channel">
+            <option value="in_app">In-app</option>
+            <option value="email">Email</option>
+            <option value="sms">SMS</option>
+            <option value="push">Push</option>
+        </select>
+        <button onclick="createNotification()">Crear notificación</button>
+    
+        <button onclick="loadNotifications()">Refrescar</button>
+        <div id="notificationsList"></div>
+    </section>
+
+    <script src="/static/js/common.js"></script>
+    <script>
+        (async () => {
+        const user = await requireAuth();
+        if (!user) return;
+        document.getElementById("userInfo").innerText = `Sesión activa: ${user.email}`;
+        loadNotifications();
+        })();
+
+        async function createNotification() {
+        const title = document.getElementById("title").value;
+        const message = document.getElementById("message").value;
+        const channel = document.getElementById("channel").value;
+
+        const res = await apiFetch("/notifications/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, message, channel })
+        });
+
+        if (res.ok) {
+            document.getElementById("title").value = "";
+            document.getElementById("message").value = "";
+            setTimeout(loadNotifications, 500);
+        }
+        }
+
+        async function loadNotifications() {
+        const res = await apiFetch("/notifications/");
+        const notifications = await res.json();
+        const container = document.getElementById("notificationsList");
+        container.innerHTML = "";
+
+        if (notifications.length === 0) {
+            container.innerHTML = "<p>No tienes notificaciones aún.</p>";
+            return;
+        }
+
+        notifications.forEach(n => {
+            const div = document.createElement("div");
+            div.className = "notif" + (n.is_read ? " leida" : "");
+            div.innerHTML = `
+            <strong>${n.title}</strong>
+            <span class="status ${n.status}">${n.status}</span>
+            <p>${n.message}</p>
+            <small>Canal: ${n.channel} | ${new Date(n.created_at).toLocaleString()}</small><br>
+            ${!n.is_read ? `<button onclick="markAsRead(${n.id})">Marcar leída</button>` : ""}
+            <button onclick="deleteNotification(${n.id})">Eliminar</button>
+            `;
+            container.appendChild(div);
+        });
+        }
+
+        async function markAsRead(id) {
+        await apiFetch(`/notifications/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ is_read: true })
+        });
+        loadNotifications();
+        }
+
+        async function deleteNotification(id) {
+        await apiFetch(`/notifications/${id}`, { method: "DELETE" });
+        loadNotifications();
+        }
+    </script>
+</body>
+</html>

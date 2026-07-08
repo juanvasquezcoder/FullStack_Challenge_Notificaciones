@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido al sistema de notificaciones</h1>
+    </header>
+    <section>
+        <h1>Iniciar sesión</h1>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+        <p><a href="/registro">¿No tienes cuenta? Regístrate</a></p>
+        <div class="error" id="error"></div>
+    </section>
+
+    <script src="/static/js/common.js"></script>
+    <script>
+        async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const form = new URLSearchParams();
+        form.append("username", email);
+        form.append("password", password);
+
+        const res = await fetch(`${API}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: form
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            document.getElementById("error").innerText = data.detail || "Error al iniciar sesión";
+            return;
+        }
+        setToken(data.access_token);
+        window.location.href = "/notificaciones";
+        }
+    </script>
+</body>
+</html>

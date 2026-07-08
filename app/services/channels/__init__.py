@@ -1,0 +1,1 @@
+from app.services.channels.registry import get_channel_handler

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <h1>Sistema de Notificaciones</h1>
+    <div id="userInfo"></div>
+
+    <section id="authSection">
+    <h2>Registro / Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Contraseña">
+    <input type="text" id="fullName" placeholder="Nombre completo (solo para registro)">
+    <button onclick="register()">Registrarse</button>
+    <button onclick="login()">Iniciar sesión</button>
+    <div class="error" id="authError"></div>
+    </section>
+
+    <section id="notifSection" style="display:none;">
+    <h2>Nueva notificación</h2>
+    <input type="text" id="title" placeholder="Título">
+    <textarea id="message" placeholder="Mensaje"></textarea>
+    <select id="channel">
+        <option value="in_app">In-app</option>
+        <option value="email">Email</option>
+        <option value="sms">SMS</option>
+        <option value="push">Push</option>
+    </select>
+    <button onclick="createNotification()">Crear notificación</button>
+    <button onclick="logout()" style="background:#6b7280;">Cerrar sesión</button>
+    </section>
+
+    <section id="listSection" style="display:none;">
+    <h2>Mis notificaciones</h2>
+    <button onclick="loadNotifications()" style="background:#6b7280;">Refrescar</button>
+    <div id="notificationsList"></div>
+    </section>
+
+
+    <script src="../js/register.js"></script>
+    <script src="../js/login.js"></script>
+    <script src="../js/notifications.js"></script>
+<!-- <script>
+const API = "http://127.0.0.1:8000";
+let token = localStorage.getItem("token");
+
+updateUI();
+</script> -->
+
+</body>
+</html>
